@@ -1,8 +1,8 @@
 import { flexRender, useReactTable, getCoreRowModel, ColumnResizeMode, ColumnDef } from "@tanstack/react-table";
 import { DUMMY_DATA } from "../data";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import './Table.css'; 
-import { Table as BTable } from 'react-bootstrap'
+import { Table as BTable, Form } from 'react-bootstrap'
 
 const columnsData = [
     {
@@ -13,7 +13,7 @@ const columnsData = [
     {
         header: "IAAS enabled",
         accessorKey: "IAAS enabled",
-        cell: (props) => <p>{props.getValue() ? 'true' : 'false'}</p>,
+        cell: (props) => <p>{props.getValue()}</p>,
     },
     {
         header: "subs",
@@ -81,13 +81,29 @@ const columnsData = [
     },
 ];
 
+const recursiveSearch = (obj, query) => {
+    if (typeof obj === 'string') {
+        return obj.toLowerCase().includes(query.toLowerCase());
+    }
+    if (typeof obj === 'object' && obj !== null) {
+        return Object.values(obj).some(value => recursiveSearch(value, query));
+    }
+    return false;
+};
+
 const Table = () => {
 
     const [data, setData] = useState(DUMMY_DATA);
     const [columns] = useState(() => [...columnsData])
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredData = useMemo(() => {
+        if (!searchQuery) return data;
+        return data.filter(row => recursiveSearch(row, searchQuery));
+    }, [data, searchQuery]);
     
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
         columnResizeMode: 'onChange',
@@ -96,6 +112,13 @@ const Table = () => {
     console.log(table.getHeaderGroups());
     return (
         <div className="p-2">
+            <Form.Control
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="mb-3"
+            />
             <BTable striped bordered hover responsive size="sm" 
                 // style={{width: table.getTotalSize()}}
             >

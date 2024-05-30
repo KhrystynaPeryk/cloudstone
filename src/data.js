@@ -1,7 +1,7 @@
 export const DUMMY_DATA = [
     {
         'TLA': 'xxx',
-        'IAAS enabled': true,
+        'IAAS enabled': 'true',
         'subs': {
             'np': 'something in subs np 1',
             'prod': 'something in subs prod 1'
@@ -22,7 +22,7 @@ export const DUMMY_DATA = [
     },
     {
         'TLA': 'yyy',
-        'IAAS enabled': true,
+        'IAAS enabled': 'true',
         'subs': {
             'np': 'something in subs np 2',
             'prod': 'something in subs prod 2'
@@ -43,7 +43,7 @@ export const DUMMY_DATA = [
     },
     {
         'TLA': 'zzs',
-        'IAAS enabled': false,
+        'IAAS enabled': 'false',
         'subs': {
             'np': 'something in subs np 3',
             'prod': 'something in subs prod 3'

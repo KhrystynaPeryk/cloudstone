@@ -94,7 +94,6 @@ const recursiveSearch = (obj, query) => {
 const Table = () => {
 
     const [data, setData] = useState(DUMMY_DATA);
-    const [columns] = useState(() => [...columnsData])
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredData = useMemo(() => {
@@ -104,7 +103,7 @@ const Table = () => {
     
     const table = useReactTable({
         data: filteredData,
-        columns,
+        columns: columnsData,
         getCoreRowModel: getCoreRowModel(),
         columnResizeMode: 'onChange',
     });
@@ -119,7 +118,7 @@ const Table = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="mb-3"
             />
-            <BTable striped bordered hover responsive size="sm" 
+            <BTable striped bordered hover responsive size="sm" variant="dark"
                 // style={{width: table.getTotalSize()}}
             >
                 <thead>

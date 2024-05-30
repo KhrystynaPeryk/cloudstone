@@ -1,4 +1,4 @@
-.table {
+/* .table {
   display: table;
   width: 100%;
   border-collapse: collapse;
@@ -7,9 +7,9 @@
 .row-container, .header-container {
   display: flex;
   width: 100%;
-}
+} */
 
-.th, .td {
+/* .th, .td {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -28,4 +28,4 @@
 
 .tr > div {
   flex: 1;
-}
+} */

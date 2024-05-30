@@ -1,36 +1,10 @@
-.container {
-    padding: 20px;
+.table-container {
+    margin-left: 25vh;
+    margin-top: 10vh;
 }
 
-.table {
-    border: 1px solid lightgray;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid lightgray;
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
+th, td, tr {
+    border: 1px solid black;
+    padding: 0.5em;
     text-align: center;
-    white-space: nowrap;
 }
-
-/* .resizer {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: 5px;
-    cursor: col-resize;
-    user-select: none;
-    touch-action: none;
-}
-
-.isResizing {
-    background-color: #d2d2d2;
-} */

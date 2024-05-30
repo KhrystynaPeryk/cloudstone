@@ -2,7 +2,8 @@ import { flexRender, useReactTable, getCoreRowModel, ColumnResizeMode, ColumnDef
 import { DUMMY_DATA } from "../data";
 import { useState, useMemo } from "react";
 import './Table.css'; 
-import { Table as BTable, Form } from 'react-bootstrap'
+import Table from 'react-bootstrap/Table'
+import SearchInput from "./SearchInput";
 
 const columnsData = [
     {
@@ -91,7 +92,7 @@ const recursiveSearch = (obj, query) => {
     return false;
 };
 
-const Table = () => {
+const TableComponent = () => {
 
     const [data, setData] = useState(DUMMY_DATA);
     const [searchQuery, setSearchQuery] = useState("");
@@ -110,22 +111,16 @@ const Table = () => {
     
     console.log(table.getHeaderGroups());
     return (
-        <div className="p-2">
-            <Form.Control
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="mb-3"
-            />
-            <BTable striped bordered hover responsive size="sm" variant="dark"
-                // style={{width: table.getTotalSize()}}
+        <div className="table-container">
+            <SearchInput searchQuery={searchQuery} onSetSearchQuery={setSearchQuery}/>
+            <Table striped bordered hover responsive size="sm" className="mt-3"
+                //style={{width: table.getCenterTotalSize()}}
             >
                 <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
-                                <th key={header.id} colSpan={header.colSpan} style={{ position: 'relative', width: header.getSize() }}>
+                                <th key={header.id} colSpan={header.colSpan} style={{ position: 'relative', width: header.getSize()}}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
@@ -167,9 +162,9 @@ const Table = () => {
                     </tr>
                 ))}
                 </tbody>
-            </BTable>
-            </div>
+            </Table>
+        </div>
         )
 };
 
-export default Table;
+export default TableComponent;

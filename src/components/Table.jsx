@@ -84,28 +84,51 @@ const columns = [
 const Table = () => {
 
     const [data, setData] = useState(DUMMY_DATA);
+    const [columnResizing, setColumnResizing] = useState({});
+    
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        
+        state: {
+            columnResizing,
+        },
+        onColumnResizingChange: setColumnResizing,
     });
     
     console.log(table.getHeaderGroups());
     return (
         <div className="p-2">
-            <BTable striped bordered hover responsive size="sm">
+            <BTable striped bordered hover responsive size="sm" style={{width: table.getTotalSize()}}>
                 <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
-                                <th key={header.id} colSpan={header.colSpan}>
+                                <th key={header.id} colSpan={header.colSpan} style={{ position: 'relative', width: header.getSize() }}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
                                             header.column.columnDef.header,
                                             header.getContext()
-                                        )}
+                                        )
+                                    }
+                                    {header.column.getCanResize() && (
+                                        <div
+                                            onMouseDown={header.getResizeHandler()}
+                                            onTouchStart={header.getResizeHandler()}
+                                            className={`resizer ${header.column.getIsResizing() ? 'isResizing' : ''}`}
+                                            style={{
+                                                position: 'absolute',
+                                                right: 0,
+                                                top: 0,
+                                                height: '100%',
+                                                width: '5px',
+                                                cursor: 'col-resize',
+                                                userSelect: 'none',
+                                                touchAction: 'none',
+                                            }}
+                                        />
+                                    )}
                                 </th>
                             ))}
                         </tr>

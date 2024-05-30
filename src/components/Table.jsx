@@ -1,19 +1,19 @@
-import { flexRender, useReactTable, getCoreRowModel, ColumnResizeMode } from "@tanstack/react-table";
+import { flexRender, useReactTable, getCoreRowModel, ColumnResizeMode, ColumnDef } from "@tanstack/react-table";
 import { DUMMY_DATA } from "../data";
 import { useState } from "react";
 import './Table.css'; 
 import { Table as BTable } from 'react-bootstrap'
 
-const columns = [
+const columnsData = [
     {
         header: "TLA",
         accessorKey: "TLA",
-        // cell: (props) => <p>{props.getValue()}</p>,
+        cell: (props) => <p>{props.getValue()}</p>,
     },
     {
         header: "IAAS enabled",
         accessorKey: "IAAS enabled",
-        // cell: (props) => <p>{props.getValue() ? 'true' : 'false'}</p>,
+        cell: (props) => <p>{props.getValue() ? 'true' : 'false'}</p>,
     },
     {
         header: "subs",
@@ -21,12 +21,12 @@ const columns = [
             {
                 accessorKey: "subs.np",
                 header: "np",
-                // cell: (props) => <p>{props.getValue()}</p>,
+                cell: (props) => <p>{props.getValue()}</p>,
             },
             {
                 accessorKey: "subs.prod",
                 header: "prod",
-                // cell: (props) => <p>{props.getValue()}</p>,
+                cell: (props) => <p>{props.getValue()}</p>,
             }
         ]
     },
@@ -36,12 +36,12 @@ const columns = [
             {
                 accessorKey: "VAULT.np",
                 header: "np",
-                // cell: (props) => <p>{props.getValue()}</p>,
+                cell: (props) => <p>{props.getValue()}</p>,
             },
             {
                 accessorKey: "VAULT.prod",
                 header: "prod",
-                // cell: (props) => <p>{props.getValue()}</p>,
+                cell: (props) => <p>{props.getValue()}</p>,
             }
         ]
     },
@@ -84,22 +84,21 @@ const columns = [
 const Table = () => {
 
     const [data, setData] = useState(DUMMY_DATA);
-    const [columnResizing, setColumnResizing] = useState({});
+    const [columns] = useState(() => [...columnsData])
     
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        state: {
-            columnResizing,
-        },
-        onColumnResizingChange: setColumnResizing,
+        columnResizeMode: 'onChange',
     });
     
     console.log(table.getHeaderGroups());
     return (
         <div className="p-2">
-            <BTable striped bordered hover responsive size="sm" style={{width: table.getTotalSize()}}>
+            <BTable striped bordered hover responsive size="sm" 
+                // style={{width: table.getTotalSize()}}
+            >
                 <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
@@ -114,6 +113,7 @@ const Table = () => {
                                     }
                                     {header.column.getCanResize() && (
                                         <div
+                                            onDoubleClick={() => header.column.resetSize()}
                                             onMouseDown={header.getResizeHandler()}
                                             onTouchStart={header.getResizeHandler()}
                                             className={`resizer ${header.column.getIsResizing() ? 'isResizing' : ''}`}

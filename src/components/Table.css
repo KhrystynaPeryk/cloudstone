@@ -20,7 +20,7 @@ th {
     white-space: nowrap;
 }
 
-.resizer {
+/* .resizer {
     position: absolute;
     right: 0;
     top: 0;
@@ -33,4 +33,4 @@ th {
 
 .isResizing {
     background-color: #d2d2d2;
-}
+} */

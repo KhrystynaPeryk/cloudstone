@@ -62,4 +62,25 @@ export const DUMMY_DATA = [
         },
         'Owner': 'Olek'
     },
+    {
+        'TLA': 'aab',
+        'IAAS enabled': 'false',
+        'subs': {
+            'np': 'something in subs np 4',
+            'prod': 'something in subs prod 4'
+        },
+        'VAULT': {
+            'np': 'something in VAULT np 4',
+            'prod': 'something in VAULT prod 4'
+        },
+        'storage acc': {
+            'np': 'something in storage acc np 4',
+            'prod': 'something in storage acc prod 4'
+        },
+        'ADO': {
+            'np': 'something in ADO np 4',
+            'prod': 'something in ADO prod 4'
+        },
+        'Owner': 'Sasha'
+    },
 ]

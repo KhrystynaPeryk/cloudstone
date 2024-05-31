@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import './Table.css'; 
 import Table from 'react-bootstrap/Table'
 import SearchInput from "./SearchInput";
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
 
 const recursiveSearch = (obj, query) => {
     if (typeof obj === 'string') {
@@ -36,6 +36,12 @@ const TableComponent = () => {
         setSelectedOwner(prev =>
             prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
         );
+    };
+
+    const handleResetFilters = () => {
+        setSearchQuery("");
+        setSelectedTLA([]);
+        setSelectedOwner([]);
     };
 
     const filteredData = useMemo(() => {
@@ -222,6 +228,7 @@ const TableComponent = () => {
                 ))}
                 </tbody>
             </Table>
+            <Button variant="outline-secondary" onClick={handleResetFilters} className="mb-3">Reset Filters</Button>
         </div>
         )
 };

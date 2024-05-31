@@ -3,8 +3,30 @@
     margin-top: 10vh;
 }
 
-th, td, tr {
-    border: 1px solid black;
-    padding: 0.5em;
-    text-align: center;
+.table-style {
+    display: block;
+    width: 100%;
+    border-collapse: collapse;
 }
+
+.table-style .th, .table-style .td {
+    border: 1px solid rgb(145, 145, 145);
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+/* .table-style .tbody tr:nth-child(odd) {
+    background-color: #6d3030 !important;
+}
+
+.table-style .tbody tr:nth-child(even) {
+    background-color: #e0e0e0;
+} */
+
+/* .th, .td, .tr {
+    border: 1px solid rgb(145, 145, 145);
+    padding: 0.2em;
+    text-align: center;
+} */
+

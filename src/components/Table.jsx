@@ -1,20 +1,11 @@
-import { flexRender, useReactTable, getCoreRowModel, ColumnResizeMode, ColumnDef } from "@tanstack/react-table";
+import { flexRender, useReactTable, getCoreRowModel } from "@tanstack/react-table";
 import { DUMMY_DATA } from "../data";
 import { useState, useMemo } from "react";
 import './Table.css'; 
 import Table from 'react-bootstrap/Table'
 import SearchInput from "./SearchInput";
-import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
-
-const recursiveSearch = (obj, query) => {
-    if (typeof obj === 'string') {
-        return obj.toLowerCase().includes(query.toLowerCase());
-    }
-    if (typeof obj === 'object' && obj !== null) {
-        return Object.values(obj).some(value => recursiveSearch(value, query));
-    }
-    return false;
-};
+import Button from 'react-bootstrap/Button';
+import { recursiveSearch, columnsData } from "../helpers/helpers";
 
 const TableComponent = () => {
 
@@ -23,6 +14,7 @@ const TableComponent = () => {
     const [selectedTLA, setSelectedTLA] = useState([]);
     const [selectedOwner, setSelectedOwner] = useState([]);
 
+    // if Owner / TLA values are identical - the dropdown list will not show duplicates (new Set() - does not allow duplicates)
     const uniqueTLA = [...new Set(data.map(item => item.TLA))];
     const uniqueOwners = [...new Set(data.map(item => item.Owner))];
 
@@ -38,12 +30,15 @@ const TableComponent = () => {
         );
     };
 
+    // Reset Filters button logic
     const handleResetFilters = () => {
         setSearchQuery("");
         setSelectedTLA([]);
         setSelectedOwner([]);
     };
 
+    // filter logic (search + tla and owner filters)
+    // useMemo is used to memoize the result of a function so that it is only recalculated when one of its dependencies changes
     const filteredData = useMemo(() => {
         return data.filter(row => {
             const matchesTLA = selectedTLA.length === 0 || selectedTLA.includes(row.TLA);
@@ -52,146 +47,26 @@ const TableComponent = () => {
             return matchesTLA && matchesOwner && matchesSearchQuery;
         });
     }, [data, selectedTLA, selectedOwner, searchQuery]);
-
-    const columnsData = [
-        {
-            header: () => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span>TLA</span>
-                    <DropdownButton
-                        id="dropdown-basic-button"
-                        title=""
-                        drop="down"
-                        variant="outline-secondary"
-                        style={{ marginLeft: '5px' }}
-                    >
-                        {uniqueTLA.map(tla => (
-                            <Dropdown.Item
-                                key={tla}
-                                active={selectedTLA.includes(tla)}
-                                onClick={() => handleSelectTLA(tla)}
-                            >
-                                {tla}
-                            </Dropdown.Item>
-                        ))}
-                    </DropdownButton>
-                </div>
-            ),
-            accessorKey: "TLA",
-            cell: (props) => <p>{props.getValue()}</p>,
-        },
-        {   
-            header: () => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span>Owner</span>
-                    <DropdownButton
-                        id="dropdown-basic-button"
-                        title=""
-                        drop="down"
-                        variant="outline-secondary"
-                        style={{ marginLeft: '5px' }}
-                    >
-                        {uniqueOwners.map(owner => (
-                            <Dropdown.Item
-                                key={owner}
-                                active={selectedOwner.includes(owner)}
-                                onClick={() => handleSelectOwner(owner)}
-                            >
-                                {owner}
-                            </Dropdown.Item>
-                        ))}
-                    </DropdownButton>
-                </div>
-            ),
-            accessorKey: "Owner",
-            cell: (props) => <p>{props.getValue()}</p>,
-        },
-        {
-            header: "IAAS enabled",
-            accessorKey: "IAAS enabled",
-            cell: (props) => <p>{props.getValue()}</p>,
-        },
-        {
-            header: "subs",
-            columns: [
-                {
-                    accessorKey: "subs.np",
-                    header: "np",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                },
-                {
-                    accessorKey: "subs.prod",
-                    header: "prod",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                }
-            ]
-        },
-        {
-            header: "VAULT",
-            columns: [
-                {
-                    accessorKey: "VAULT.np",
-                    header: "np",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                },
-                {
-                    accessorKey: "VAULT.prod",
-                    header: "prod",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                }
-            ]
-        },
-        {
-            header: "storage acc",
-            columns: [
-                {
-                    accessorKey: "storage acc.np",
-                    header: "np",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                },
-                {
-                    accessorKey: "storage acc.prod",
-                    header: "prod",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                }
-            ]
-        },
-        {
-            header: "ADO",
-            columns: [
-                {
-                    accessorKey: "ADO.np",
-                    header: "np",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                },
-                {
-                    accessorKey: "ADO.prod",
-                    header: "prod",
-                    cell: (props) => <p>{props.getValue()}</p>,
-                }
-            ]
-        },
-    ];
     
+    // initiating a TanStack table instance
     const table = useReactTable({
         data: filteredData,
-        columns: columnsData,
+        columns: columnsData(uniqueTLA, selectedTLA, handleSelectTLA, uniqueOwners, selectedOwner, handleSelectOwner),
         getCoreRowModel: getCoreRowModel(),
         columnResizeMode: 'onChange',
     });
     
-    console.log(table.getHeaderGroups());
     return (
         <div className="table-container">
             <SearchInput searchQuery={searchQuery} onSetSearchQuery={setSearchQuery}/>
-            <Table striped bordered hover responsive size="sm" className="mt-3"
+            <Table striped bordered hover responsive size="sm" className="mt-3 table-style"
                 //style={{width: table.getCenterTotalSize()}}
             >
-                <thead>
+                <thead className="thead">
                     {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
+                        <tr key={headerGroup.id} className="tr">
                             {headerGroup.headers.map(header => (
-                                <th key={header.id} colSpan={header.colSpan} style={{ position: 'relative', width: header.getSize()}}>
+                                <th key={header.id} colSpan={header.colSpan} style={{ position: 'relative', width: header.getSize()}} className="th">
                                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                     {header.column.getCanResize() && (
                                         <div
@@ -216,11 +91,11 @@ const TableComponent = () => {
                         </tr>
                     ))}
                 </thead>
-                <tbody>
+                <tbody className="tbody">
                 {table.getRowModel().rows.map(row => (
-                    <tr key={row.id}>
+                    <tr key={row.id} className="tr">
                     {row.getVisibleCells().map(cell => (
-                        <td key={cell.id}>
+                        <td key={cell.id} className="td">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                     ))}
@@ -228,7 +103,7 @@ const TableComponent = () => {
                 ))}
                 </tbody>
             </Table>
-            <Button variant="outline-secondary" onClick={handleResetFilters} className="mb-3">Reset Filters</Button>
+            <Button variant="outline-secondary" onClick={handleResetFilters} className="mb-3 mt-3">Reset Filters</Button>
         </div>
         )
 };

@@ -11,6 +11,10 @@ const columnsData = [
         accessorKey: "TLA",
         cell: (props) => <p>{props.getValue()}</p>,
     },
+    {   header: "Owner",
+        accessorKey: "Owner",
+        cell: (props) => <p>{props.getValue()}</p>,
+    },
     {
         header: "IAAS enabled",
         accessorKey: "IAAS enabled",
@@ -75,10 +79,6 @@ const columnsData = [
                 cell: (props) => <p>{props.getValue()}</p>,
             }
         ]
-    },
-    {   header: "Owner",
-        accessorKey: "Owner",
-        cell: (props) => <p>{props.getValue()}</p>,
     },
 ];
 
